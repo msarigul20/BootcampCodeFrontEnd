@@ -40,13 +40,26 @@ export class ProductAddComponent implements OnInit {
       this.productService.add(productModel).subscribe(
         (response) => {
           this.toastrService.success(response.message, 'Başarılı');
-        },
+          console.log('ekleme başarılı');
+        }, 
         (responseError) => {
-          if (responseError.error.Errors.length > 0) {
+          console.log(responseError.error.message)
+          console.log(responseError)
+          if (responseError.error.success==false) {
+            this.toastrService.error(
+              responseError.error.message,
+              'Business RuleError'
+            );
+          }else if (responseError.error.Errors.length > 0) {
+            console.log(responseError)
             for (let i = 0; i < responseError.error.Errors.length; i++) {
-              this.toastrService.error(responseError.error.Errors[i].ErrorMessage,'Doğrulama hatası');
+              this.toastrService.error(
+                responseError.error.Errors[i].ErrorMessage,
+                'ValidatorError'
+              );
             }
           }
+
         }
       );
     } else {
